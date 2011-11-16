@@ -365,6 +365,20 @@ class ModelManager implements ModelManagerInterface
 
         return array('filter' => $values);
     }
+    
+    public function getDatagridParameters(DatagridInterface $datagrid, $additions = array())
+    {
+        $parameters = array (
+            'filter' => $datagrid->getValues()
+        );
+        
+        foreach($additions as $key => $value)
+        {
+          $parameters[$key] = $value;
+        }
+        
+        return $parameters;
+    }
 
     /**
      * @param sring $class

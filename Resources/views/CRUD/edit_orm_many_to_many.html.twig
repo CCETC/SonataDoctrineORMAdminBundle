@@ -15,21 +15,6 @@ file that was distributed with this source code.
             {{ form_widget(form) }}
         </span>
 
-        <span id="field_actions_{{ id }}" >
-            {% if sonata_admin.field_description.associationadmin.hasRoute('create') and sonata_admin.field_description.associationadmin.isGranted('CREATE') %}
-                <a
-                    href="{{ sonata_admin.field_description.associationadmin.generateUrl('create') }}"
-                    onclick="start_field_dialog_form_add_{{ id }}(event)"
-                    class="sonata-ba-action"
-                    >
-                        <img
-                            src="{{ asset('bundles/sonataadmin/famfamfam/add.png') }}"
-                            alt="{% trans from 'SonataAdminBundle' %}btn_add{% endtrans %}"
-                        />
-                </a>
-            {% endif %}
-        </span>
-
         <div style="display: none" id="field_dialog_{{ id }}">
         </div>
     </div>

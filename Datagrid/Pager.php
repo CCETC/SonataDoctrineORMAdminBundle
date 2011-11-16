@@ -52,6 +52,17 @@ class Pager extends BasePager
     {
         return $this->getQuery()->execute(array(), $hydrationMode);
     }
+    
+    public function getAllResults()
+    {
+        $query = clone $this->getQuery();
+
+        if (count($this->getParameters()) > 0) {
+            $query->setParameters($this->getParameters());
+        }
+        $query->setMaxResults($this->getNbResults());
+        return $query->getQuery()->execute();
+    }
 
     /**
      * Get the query for the pager.
