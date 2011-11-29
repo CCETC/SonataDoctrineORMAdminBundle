@@ -47,6 +47,8 @@ class SonataDoctrineORMAdminExtension extends Extension
         $processor = new Processor();
         $config = $processor->processConfiguration($configuration, $configs);
 
+        $container->setParameter('sonata_doctrine_orm_admin.entity_manager', $config['entity_manager']);
+
         $pool = $container->getDefinition('sonata.admin.manager.orm');
         $pool->addMethodCall('__hack_doctrine_orm__', $config);
 
@@ -74,12 +76,15 @@ class SonataDoctrineORMAdminExtension extends Extension
                         'date'         => 'SonataAdminBundle:CRUD:list_date.html.twig',
                         'datetime'     => 'SonataAdminBundle:CRUD:list_datetime.html.twig',
                         'text'         => 'SonataAdminBundle:CRUD:base_list_field.html.twig',
+                        'trans'        => 'SonataAdminBundle:CRUD:list_trans.html.twig',
                         'string'       => 'SonataAdminBundle:CRUD:base_list_field.html.twig',
                         'smallint'     => 'SonataAdminBundle:CRUD:base_list_field.html.twig',
                         'bigint'       => 'SonataAdminBundle:CRUD:base_list_field.html.twig',
                         'integer'      => 'SonataAdminBundle:CRUD:base_list_field.html.twig',
                         'decimal'      => 'SonataAdminBundle:CRUD:base_list_field.html.twig',
                         'identifier'   => 'SonataAdminBundle:CRUD:base_list_field.html.twig',
+                        'currency'     => 'SonataAdminBundle:CRUD:list_currency.html.twig',
+                        'percent'      => 'SonataAdminBundle:CRUD:list_percent.html.twig',
                     ),
                     'show' => array(
                         'array'        => 'SonataAdminBundle:CRUD:show_array.html.twig',
@@ -87,11 +92,14 @@ class SonataDoctrineORMAdminExtension extends Extension
                         'date'         => 'SonataAdminBundle:CRUD:show_date.html.twig',
                         'datetime'     => 'SonataAdminBundle:CRUD:show_datetime.html.twig',
                         'text'         => 'SonataAdminBundle:CRUD:base_show_field.html.twig',
+                        'trans'        => 'SonataAdminBundle:CRUD:show_trans.html.twig',
                         'string'       => 'SonataAdminBundle:CRUD:base_show_field.html.twig',
                         'smallint'     => 'SonataAdminBundle:CRUD:base_show_field.html.twig',
                         'bigint'       => 'SonataAdminBundle:CRUD:base_show_field.html.twig',
                         'integer'      => 'SonataAdminBundle:CRUD:base_show_field.html.twig',
                         'decimal'      => 'SonataAdminBundle:CRUD:base_show_field.html.twig',
+                        'currency'     => 'SonataAdminBundle:CRUD:base_currency.html.twig',
+                        'percent'      => 'SonataAdminBundle:CRUD:base_percent.html.twig',
                     )
                 )
             )
@@ -106,6 +114,8 @@ class SonataDoctrineORMAdminExtension extends Extension
                 'bigint'       => 'SonataIntlBundle:CRUD:list_decimal.html.twig',
                 'integer'      => 'SonataIntlBundle:CRUD:list_decimal.html.twig',
                 'decimal'      => 'SonataIntlBundle:CRUD:list_decimal.html.twig',
+                'currency'     => 'SonataIntlBundle:CRUD:list_currency.html.twig',
+                'percent'      => 'SonataIntlBundle:CRUD:list_percent.html.twig',
             ));
 
             $defaultConfig['templates']['types']['show'] = array_merge($defaultConfig['templates']['types']['show'], array(
@@ -115,6 +125,8 @@ class SonataDoctrineORMAdminExtension extends Extension
                 'bigint'       => 'SonataIntlBundle:CRUD:show_decimal.html.twig',
                 'integer'      => 'SonataIntlBundle:CRUD:show_decimal.html.twig',
                 'decimal'      => 'SonataIntlBundle:CRUD:show_decimal.html.twig',
+                'currency'     => 'SonataIntlBundle:CRUD:show_currency.html.twig',
+                'percent'      => 'SonataIntlBundle:CRUD:show_percent.html.twig',
             ));
         }
 

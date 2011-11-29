@@ -8,6 +8,11 @@ Doctrine ORM Admin's documentation!
 
 The ``Doctrine ORM Admin`` provides services to work with the ``Admin Bundle`` and the ``Doctrine Project``.
 
+**Google Groups**: For questions and proposals you can post on this google groups
+
+* `Sonata Users <https://groups.google.com/group/sonata-users>`_: Only for user questions
+* `Sonata Devs <https://groups.google.com/group/sonata-devs>`_: Only for devs
+
 Reference Guide
 ---------------
 
@@ -16,6 +21,7 @@ Reference Guide
    :numbered:
 
    reference/installation
+   reference/configuration
    reference/list_field_definition
    reference/filter_field_definition
    reference/form_field_definition

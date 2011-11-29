@@ -21,8 +21,6 @@ use Sonata\AdminBundle\Guesser\TypeGuesserInterface;
 use Sonata\AdminBundle\Filter\FilterFactoryInterface;
 
 use Sonata\DoctrineORMAdminBundle\Datagrid\Pager;
-use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
-
 use Symfony\Component\Form\FormFactory;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -72,7 +70,6 @@ class DatagridBuilder implements DatagridBuilderInterface
         }
 
         $fieldDescription->setOption('code', $fieldDescription->getOption('code', $fieldDescription->getName()));
-        $fieldDescription->setOption('label', $fieldDescription->getOption('label', $fieldDescription->getName()));
         $fieldDescription->setOption('name', $fieldDescription->getOption('name', $fieldDescription->getName()));
     }
 
@@ -98,7 +95,7 @@ class DatagridBuilder implements DatagridBuilderInterface
                 if (is_array($value)) {
                     $fieldDescription->setOption($name, array_merge($value, $fieldDescription->getOption($name, array())));
                 } else {
-                    $fieldDescription->setOption($name,    $fieldDescription->getOption($name, $value));
+                    $fieldDescription->setOption($name, $fieldDescription->getOption($name, $value));
                 }
             }
         } else {
@@ -110,6 +107,10 @@ class DatagridBuilder implements DatagridBuilderInterface
 
         $fieldDescription->mergeOption('field_options', array('required' => false));
         $filter = $this->filterFactory->create($fieldDescription->getName(), $type, $fieldDescription->getOptions());
+
+        if (!$filter->getLabel()) {
+            $filter->setLabel($admin->getLabelTranslatorStrategy()->getLabel($fieldDescription->getName(), 'filter', 'label'));
+        }
 
         $datagrid->addFilter($filter);
 
@@ -123,14 +124,11 @@ class DatagridBuilder implements DatagridBuilderInterface
      */
     public function getBaseDatagrid(AdminInterface $admin, array $values = array())
     {
-        $queryBuilder = $admin->getModelManager()->createQuery($admin->getClass());
-
-        $query = new ProxyQuery($queryBuilder);
         $pager = new Pager;
         $pager->setCountColumn($admin->getModelManager()->getIdentifierFieldNames($admin->getClass()));
 
         $formBuilder = $this->formFactory->createNamedBuilder('form', 'filter', array(), array('csrf_protection' => false));
 
-        return new Datagrid($query, $admin->getList(), $pager, $formBuilder, $values);
+        return new Datagrid($admin->createQuery(), $admin->getList(), $pager, $formBuilder, $values);
     }
 }
