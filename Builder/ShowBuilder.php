@@ -69,7 +69,7 @@ class ShowBuilder implements ShowBuilderInterface
             case ClassMetadataInfo::ONE_TO_MANY:
             case ClassMetadataInfo::ONE_TO_ONE:
                 // todo
-                return;
+                $list->add($fieldDescription);
             default:
                 $list->add($fieldDescription);
         }

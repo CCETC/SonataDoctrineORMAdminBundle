@@ -53,15 +53,24 @@ class Pager extends BasePager
         return $this->getQuery()->execute(array(), $hydrationMode);
     }
     
-    public function getAllResults()
+    public function getAllResultsAsArray()
     {
         $query = clone $this->getQuery();
-
-        if (count($this->getParameters()) > 0) {
+        
+        /*if (count($this->getParameters()) > 0) {
             $query->setParameters($this->getParameters());
-        }
+        }*/
         $query->setMaxResults($this->getNbResults());
-        return $query->getQuery()->execute();
+        $query->setFirstResult(null);
+
+        $queryObject = $query->getQuery();
+//        $queryObject->setResultCacheDriver(new \Doctrine\Common\Cache\ApcCache());
+//        $queryObject->useResultCache(true);
+//        $queryObject->setQueryCacheDriver(new \Doctrine\Common\Cache\ApcCache());
+//        $queryObject->useQueryCache(true);
+
+        return $queryObject->getArrayResult();
+//        return $queryObject->execute();
     }
 
     /**
