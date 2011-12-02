@@ -55,22 +55,18 @@ class Pager extends BasePager
     
     public function getAllResultsAsArray()
     {
+        ini_set('memory_limit', '1024M');
+        set_time_limit ( 0 );
+
         $query = clone $this->getQuery();
         
-        /*if (count($this->getParameters()) > 0) {
-            $query->setParameters($this->getParameters());
-        }*/
         $query->setMaxResults($this->getNbResults());
         $query->setFirstResult(null);
 
         $queryObject = $query->getQuery();
-//        $queryObject->setResultCacheDriver(new \Doctrine\Common\Cache\ApcCache());
-//        $queryObject->useResultCache(true);
-//        $queryObject->setQueryCacheDriver(new \Doctrine\Common\Cache\ApcCache());
-//        $queryObject->useQueryCache(true);
-
+        $queryObject->setHint(Query::HINT_INCLUDE_META_COLUMNS, true);
+        
         return $queryObject->getArrayResult();
-//        return $queryObject->execute();
     }
 
     /**
