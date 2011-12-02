@@ -103,7 +103,7 @@ This code manage the many-to-[one|many] association field popup
 
                 // open the dialog in modal mode
                 field_dialog_{{ id }}.dialog({
-                    height: 'auto',
+                    height: 500,
                     width: 980,
                     modal: true,
                     resizable: false,
@@ -148,11 +148,11 @@ This code manage the many-to-[one|many] association field popup
 
                 // open the dialog in modal mode
                 field_dialog_{{ id }}.dialog({
-                    height: 'auto',
+                    height: 300,
                     width: 650,
                     modal: true,
                     resizable: false,
-                    title: '{{ sonata_admin.field_description.associationadmin.label }}',
+                    title: '{{ sonata_admin.field_description.associationadmin.label }} / New',
                     close: function(event, ui) {
                         Admin.log('[{{ id }}|field_dialog_form_add] dialog closed - removing `live` events');
                         // make sure we have a clean state
