@@ -13,6 +13,9 @@ namespace Sonata\DoctrineORMAdminBundle\Filter;
 
 use Sonata\AdminBundle\Form\Type\Filter\DateType;
 
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToArrayTransformer;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
+
 class DateFilter extends Filter
 {
     /**
@@ -27,17 +30,6 @@ class DateFilter extends Filter
         if (!$data || !is_array($data) || !array_key_exists('value', $data)) {
             return;
         }
-
-        if(!array_key_exists('year', $data['value']) || !array_key_exists('month', $data['value']) || !array_key_exists('day', $data['value'])) {
-            return;
-        }
-        
-        if(trim($data['value']['year']) == "" || trim($data['value']['month']) == "" || trim($data['value']['day']) == "")
-        {
-            return;
-        }
-        
-        $value = $data['value']['year'].'-'.$data['value']['month'].'-'.$data['value']['day'];
         
         $data['type'] = !isset($data['type']) ?  DateType::TYPE_EQUAL : $data['type'];
 
@@ -46,13 +38,28 @@ class DateFilter extends Filter
         if (!$operator) {
             $operator = '=';
         }
-
+       
         if(in_array($operator, array('NULL', 'NOT NULL'))) {
             $this->applyWhere($queryBuilder, sprintf('%s.%s IS %s ', $alias, $field, $operator));
         } else {
+            if(is_array($data['value'])) {
+                $transformer = new DateTimeToArrayTransformer(null, null, array('year', 'month', 'day'));
+            } else {
+                $transformer = new DateTimeToStringTransformer(null, null, 'Y-m-d');            
+            }
+            $valueTransformed = $transformer->reverseTransform($data['value']);
+
+            if($valueTransformed) {
+                $value = $valueTransformed->format('Y-m-d');
+            } else {
+                return;
+            }
+            
             $this->applyWhere($queryBuilder, sprintf('%s.%s %s :%s', $alias, $field, $operator, $this->getName()));
             $queryBuilder->setParameter($this->getName(),  $value);
         }
+        
+        
     }
 
     /**

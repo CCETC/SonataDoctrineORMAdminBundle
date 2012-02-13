@@ -16,7 +16,7 @@ use Sonata\AdminBundle\Form\Type\Filter\DateRangeType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToArrayTransformer;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 
-class DateTimeRangeFilter extends Filter
+class DateRangeFilter extends Filter
 {
     /**
      * @param QueryBuilder $queryBuilder
@@ -35,22 +35,17 @@ class DateTimeRangeFilter extends Filter
             return;
         }
         
-        // set startDateTime and endDateTime
-        if(is_array($data['value']['start']['date'])) {
-            $transformer = new DateTimeToArrayTransformer(null, null, array('year', 'month', 'day', 'hour', 'minute'));
-            $startValueRaw = array_merge($data['value']['start']['date'], $data['value']['start']['time']);
-            $endValueRaw = array_merge($data['value']['end']['date'], $data['value']['end']['time']);
+        if(is_array($data['value']['start'])) {
+            $transformer = new DateTimeToArrayTransformer(null, null, array('year', 'month', 'day'));
         } else {
-            $transformer = new DateTimeToStringTransformer(null, null, 'Y-m-d H:i');            
-            $startValueRaw = $data['value']['start']['date'].' '.$data['value']['start']['time'];
-            $endValueRaw = $data['value']['end']['date'].' '.$data['value']['end']['time'];
+            $transformer = new DateTimeToStringTransformer(null, null, 'Y-m-d');            
         }
-        $startValueTransformed = $transformer->reverseTransform($startValueRaw);
-        $endValueTransformed = $transformer->reverseTransform($endValueRaw);
-
+        $startValueTransformed = $transformer->reverseTransform($data['value']['start']);
+        $endValueTransformed = $transformer->reverseTransform($data['value']['end']);
+                
         if($startValueTransformed && $endValueTransformed) {
-            $startValue = $startValueTransformed->format('Y-m-d H:i:s');
-            $endValue = $endValueTransformed->format('Y-m-d H:i:s');
+            $startValue = $startValueTransformed->format('Y-m-d');
+            $endValue = $endValueTransformed->format('Y-m-d');
         } else {
             return;
         }
@@ -66,7 +61,6 @@ class DateTimeRangeFilter extends Filter
         
         $queryBuilder->setParameter($this->getName().'_start',  $startValue);
         $queryBuilder->setParameter($this->getName().'_end',  $endValue);
-
     }
 
     /**
@@ -79,7 +73,7 @@ class DateTimeRangeFilter extends Filter
 
     public function getRenderSettings()
     {
-        return array('sonata_type_filter_datetime_range', array(
+        return array('sonata_type_filter_date_range', array(
             'field_type'    => $this->getFieldType(),
             'field_options' => $this->getFieldOptions(),
             'label'         => $this->getLabel()
