@@ -12,11 +12,9 @@ file that was distributed with this source code.
 {% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
 
 {% block field %}
-    {% if field_description.hasAssociationAdmin and field_description.associationadmin.id(value) %}
-        {% if field_description.hasAssociationAdmin and field_description.associationadmin.isGranted('VIEW') and field_description.associationadmin.hasRoute('show') %}
-            <a href="{{ field_description.associationadmin.generateObjectUrl('show', value) }}">{{ value|render_relation_element(field_description) }}</a>
-        {% else %}
-            {{ value|render_relation_element(field_description) }}
-        {% endif %}
+    {% if field_description.hasAssociationAdmin and field_description.associationadmin.id(value) and field_description.associationadmin.isGranted('SHOW') and field_description.associationadmin.hasRoute('show') %}
+        <a href="{{ field_description.associationadmin.generateObjectUrl('show', value) }}">{{ value|render_relation_element(field_description) }}</a>
+    {% else %}
+        {{ value|render_relation_element(field_description) }}
     {% endif %}
 {% endblock %}
