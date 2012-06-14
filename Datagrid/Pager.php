@@ -62,6 +62,7 @@ class Pager extends BasePager
         
         $query->setMaxResults($this->getNbResults());
         $query->setFirstResult(null);
+        $query->select('DISTINCT '.$query->getRootAlias());
 
         $queryObject = $query->getQuery();
         $queryObject->setHint(Query::HINT_INCLUDE_META_COLUMNS, true);
