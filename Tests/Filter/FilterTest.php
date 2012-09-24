@@ -12,6 +12,8 @@
 namespace Sonata\DoctrineORMAdminBundle\Tests\Filter;
 
 use Sonata\DoctrineORMAdminBundle\Filter\Filter;
+use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 
 class FilterTest_Filter extends Filter
 {
@@ -24,7 +26,7 @@ class FilterTest_Filter extends Filter
      * @param string $value
      * @return void
      */
-    public function filter($queryBuilder, $alias, $field, $value)
+    public function filter(ProxyQueryInterface $queryBuilder, $alias, $field, $value)
     {
         // TODO: Implement filter() method.
     }
@@ -42,7 +44,7 @@ class FilterTest_Filter extends Filter
         ));
     }
 
-    public function testAssociation($queryBuilder, $value)
+    public function testAssociation(ProxyQueryInterface $queryBuilder, $value)
     {
         return $this->association($queryBuilder, $value);
     }
@@ -76,21 +78,6 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(42, $filter->getValue());
     }
 
-    public function testAliasOption()
-    {
-        $filter = new FilterTest_Filter();
-
-        $filter->initialize('field_name', array('alias' => 'association_alias', 'field_name' => 'field_name'));
-
-        $this->assertEquals('association_alias', $filter->getOption('alias'));
-
-        $builder = new QueryBuilder;
-        $this->assertEquals(array('association_alias', 'field_name'), $filter->testAssociation($builder, 'value'));
-
-        $filter->initialize('field_name', array('field_name' => 'field_name'));
-        $this->assertEquals(array($builder->getRootAlias(), 'field_name'), $filter->testAssociation($builder, 'value'));
-    }
-
     /**
      * @expectedException RuntimeException
      */
@@ -98,5 +85,11 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new FilterTest_Filter();
         $filter->getFieldName();
+    }
+
+    public function testIsActive()
+    {
+        $filter = new FilterTest_Filter();
+        $this->assertEquals(false, $filter->isActive());
     }
 }

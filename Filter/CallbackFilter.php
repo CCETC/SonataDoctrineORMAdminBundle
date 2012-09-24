@@ -11,37 +11,32 @@
 
 namespace Sonata\DoctrineORMAdminBundle\Filter;
 
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+
 class CallbackFilter extends Filter
 {
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param mixed $data
-     * @return array
+     * {@inheritdoc}
      */
-    protected function association($queryBuilder, $data)
+    protected function association(ProxyQueryInterface $queryBuilder, $data)
     {
         return array($this->getOption('alias', $queryBuilder->getRootAlias()), false);
     }
 
     /**
-     * @throws \RuntimeException
-     * @param QueryBuilder $queryBuilder
-     * @param string $alias
-     * @param string $field
-     * @param string $data
-     * @return void
+     * {@inheritdoc}
      */
-    public function filter($queryBuilder, $alias, $field, $data)
+    public function filter(ProxyQueryInterface $queryBuilder, $alias, $field, $data)
     {
         if (!is_callable($this->getOption('callback'))) {
             throw new \RuntimeException(sprintf('Please provide a valid callback option "filter" for field "%s"', $this->getName()));
         }
 
-        call_user_func($this->getOption('callback'), $queryBuilder, $alias, $field, $data);
+        $this->active = call_user_func($this->getOption('callback'), $queryBuilder, $alias, $field, $data);
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getDefaultOptions()
     {
@@ -53,6 +48,9 @@ class CallbackFilter extends Filter
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getRenderSettings()
     {
         return array('sonata_type_filter_default', array(

@@ -13,6 +13,8 @@ namespace Sonata\DoctrineORMAdminBundle\Tests\Filter;
 
 use Sonata\DoctrineORMAdminBundle\Filter\BooleanFilter;
 use Sonata\AdminBundle\Form\Type\BooleanType;
+use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
+use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
 
 class BooleanFilterTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,7 +23,7 @@ class BooleanFilterTest extends \PHPUnit_Framework_TestCase
         $filter = new BooleanFilter;
         $filter->initialize('field_name', array('field_options' => array('class' => 'FooBar')));
 
-        $builder = new QueryBuilder;
+        $builder = new ProxyQuery(new QueryBuilder);
 
         $filter->filter($builder, 'alias', 'field', null);
         $filter->filter($builder, 'alias', 'field', '');
@@ -32,6 +34,7 @@ class BooleanFilterTest extends \PHPUnit_Framework_TestCase
         $filter->filter($builder, 'alias', 'field', array(null, 'test'));
 
         $this->assertEquals(array(), $builder->query);
+        $this->assertEquals(false, $filter->isActive());
     }
 
     public function testFilterNo()
@@ -39,12 +42,13 @@ class BooleanFilterTest extends \PHPUnit_Framework_TestCase
         $filter = new BooleanFilter;
         $filter->initialize('field_name', array('field_options' => array('class' => 'FooBar')));
 
-        $builder = new QueryBuilder;
+        $builder = new ProxyQuery(new QueryBuilder);
 
         $filter->filter($builder, 'alias', 'field', array('type' => null, 'value' => BooleanType::TYPE_NO));
 
-        $this->assertEquals(array('alias.field = :field_name'), $builder->query);
-        $this->assertEquals(array('field_name' => 0), $builder->parameters);
+        $this->assertEquals(array('alias.field = :field_name_0'), $builder->query);
+        $this->assertEquals(array('field_name_0' => 0), $builder->parameters);
+        $this->assertEquals(true, $filter->isActive());
     }
 
     public function testFilterYes()
@@ -52,12 +56,13 @@ class BooleanFilterTest extends \PHPUnit_Framework_TestCase
         $filter = new BooleanFilter;
         $filter->initialize('field_name', array('field_options' => array('class' => 'FooBar')));
 
-        $builder = new QueryBuilder;
+        $builder = new ProxyQuery(new QueryBuilder);
 
         $filter->filter($builder, 'alias', 'field', array('type' => null, 'value' => BooleanType::TYPE_YES));
 
-        $this->assertEquals(array('alias.field = :field_name'), $builder->query);
-        $this->assertEquals(array('field_name' => 1), $builder->parameters);
+        $this->assertEquals(array('alias.field = :field_name_0'), $builder->query);
+        $this->assertEquals(array('field_name_0' => 1), $builder->parameters);
+        $this->assertEquals(true, $filter->isActive());
     }
 
     public function testFilterArray()
@@ -65,10 +70,11 @@ class BooleanFilterTest extends \PHPUnit_Framework_TestCase
         $filter = new BooleanFilter;
         $filter->initialize('field_name', array('field_options' => array('class' => 'FooBar')));
 
-        $builder = new QueryBuilder;
+        $builder = new ProxyQuery(new QueryBuilder);
 
         $filter->filter($builder, 'alias', 'field', array('type' => null, 'value' => array(BooleanType::TYPE_NO)));
 
         $this->assertEquals(array('in_alias.field', 'alias.field IN ("0")'), $builder->query);
+        $this->assertEquals(true, $filter->isActive());
     }
 }

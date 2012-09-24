@@ -12,18 +12,20 @@
 namespace Sonata\DoctrineORMAdminBundle\Tests\Filter;
 
 use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
+use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 
 class CallbackFilterTest extends \PHPUnit_Framework_TestCase
 {
     public function testFilterClosure()
     {
-        $builder = new QueryBuilder;
+        $builder = new ProxyQuery(new QueryBuilder);
 
         $filter = new CallbackFilter;
         $filter->initialize('field_name', array(
             'callback' => function($builder, $alias, $field, $value) {
                 $builder->andWhere(sprintf('CUSTOM QUERY %s.%s', $alias, $field));
                 $builder->setParameter('value', $value);
+                return true;
             }
         ));
 
@@ -31,11 +33,12 @@ class CallbackFilterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array('CUSTOM QUERY alias.field'), $builder->query);
         $this->assertEquals(array('value' => 'myValue'), $builder->parameters);
+        $this->assertEquals(true, $filter->isActive());
     }
 
     public function testFilterMethod()
     {
-        $builder = new QueryBuilder;
+        $builder = new ProxyQuery(new QueryBuilder);
 
         $filter = new CallbackFilter;
         $filter->initialize('field_name', array(
@@ -46,11 +49,13 @@ class CallbackFilterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array('CUSTOM QUERY alias.field'), $builder->query);
         $this->assertEquals(array('value' => 'myValue'), $builder->parameters);
+        $this->assertEquals(true, $filter->isActive());
     }
 
     public function customCallback($builder, $alias, $field, $value) {
         $builder->andWhere(sprintf('CUSTOM QUERY %s.%s', $alias, $field));
         $builder->setParameter('value', $value);
+        return true;
     }
 
     /**
@@ -58,7 +63,7 @@ class CallbackFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFilterException()
     {
-        $builder = new QueryBuilder;
+        $builder = new ProxyQuery(new QueryBuilder);
 
         $filter = new CallbackFilter;
         $filter->initialize('field_name', array());

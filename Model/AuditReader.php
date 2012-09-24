@@ -27,43 +27,33 @@ class AuditReader implements AuditReaderInterface
     }
 
     /**
-     * @param $className
-     * @param $id
-     * @param $revision
-     * @return mixed
+     * {@inheritdoc}
      */
-    function find($className, $id, $revision)
+    public function find($className, $id, $revision)
     {
         return $this->auditReader->find($className, $id, $revision);
     }
 
     /**
-     * @param $className
-     * @param int $limit
-     * @param int $offset
-     * @return mixed
+     * {@inheritdoc}
      */
-    function findRevisionHistory($className, $limit = 20, $offset = 0)
+    public function findRevisionHistory($className, $limit = 20, $offset = 0)
     {
         return $this->auditReader->findRevisionHistory($limit, $offset);
     }
 
     /**
-     * @param $classname
-     * @param $revision
-     * @return mixed
+     * {@inheritdoc}
      */
-    function findRevision($classname, $revision)
+    public function findRevision($classname, $revision)
     {
         return $this->auditReader->findRevision($revision);
     }
 
     /**
-     * @param $className
-     * @param $id
-     * @return mixed
+     * {@inheritdoc}
      */
-    function findRevisions($className, $id)
+    public function findRevisions($className, $id)
     {
         return $this->auditReader->findRevisions($className, $id);
     }
