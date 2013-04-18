@@ -106,7 +106,7 @@ class ModelManager implements ModelManagerInterface
             throw new ModelManagerException('', 0, $e);
         }
     }
-
+    
     public function update($object)
     {
         try {
